@@ -30,6 +30,28 @@ if (! function_exists('benchmarkEnd')) {
     }
 }
 
+if (! function_exists('benchmarkDelete')) {
+    /**
+     * End benchmark prob.
+     * 
+     * @param string $name prob name
+     */
+    function benchmarkDelete(string $name = 'default'): void
+    {
+        Benchmark::delete($name);
+    }
+}
+
+if (! function_exists('benchmarkFlush')) {
+    /**
+     * Flush benchmark probs.
+     */
+    function benchmarkFlush(): void
+    {
+        Benchmark::flush();
+    }
+}
+
 if (! function_exists('benchmarkSummary')) {
     /** 
      * Get benchmark summary.

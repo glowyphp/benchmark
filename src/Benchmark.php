@@ -11,7 +11,7 @@ class Benchmark
      *
      * @var array
      */
-    protected static $probs = [];
+    private static array $probs = [];
 
     /**
      * Start benchmark prob.
@@ -19,7 +19,11 @@ class Benchmark
      * @param string $name prob name
      */
     public static function start(string $name = 'default'): void
-    {
+    {   
+        if (isset(self::$probs[$name])) {
+            throw new LogicException("Prob $name already exists.");
+        }
+
         self::$probs[$name]['time']['prob_start'] = microtime(true);
         self::$probs[$name]['memory']['prob_start'] = memory_get_usage();
     }
@@ -31,6 +35,10 @@ class Benchmark
      */
     public static function end(string $name = 'default'): void
     {
+        if (! isset(self::$probs[$name])) {
+            throw new LogicException("Prob $name doesn't exists.");
+        }
+
         self::$probs[$name]['time']['prob_end'] = microtime(true);
         self::$probs[$name]['time']['elapsed'] = microtime(true) - self::$probs[$name]['time']['prob_start'];
         
@@ -56,6 +64,30 @@ class Benchmark
         
         self::$probs[$name]['memory']['usage'] = $size;
         self::$probs[$name]['memory']['usage_formated'] = $memory_usage;
+    }
+
+    /**
+     * Delete benchmark prob.
+     * 
+     * @param string $name prob name
+     */
+    public static function delete(string $name): void
+    {
+        if (! isset(self::$probs[$name])) {
+            throw new LogicException("Prob $name doesn't exists.");
+        }
+
+        $probs = self::$probs;
+        unset($probs[$name]);
+        self::$probs = $probs;
+    }
+
+    /**
+     * Flush benchmark probs.
+     */
+    public static function flush(): void
+    {
+        self::$probs = [];
     }
 
     /** 
